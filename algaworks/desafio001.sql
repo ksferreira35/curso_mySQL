@@ -9,14 +9,14 @@ RA INTEGER AUTO_INCREMENT PRIMARY KEY,
     email VARCHAR(100),
     idade INT,
 	serie VARCHAR(3)
-);
+) ENGINE=InnoDB;
 
 CREATE TABLE curso (
 cod_curso INTEGER AUTO_INCREMENT PRIMARY KEY,
 	disciplina VARCHAR(100),
     descr TEXT,
     carga_horaria INT
-);
+) ENGINE=InnoDB;
 
 CREATE TABLE professor (
 cod_professor INTEGER AUTO_INCREMENT PRIMARY KEY,
@@ -24,7 +24,7 @@ cod_professor INTEGER AUTO_INCREMENT PRIMARY KEY,
     email VARCHAR(100),
     telefone VARCHAR(15),
     diploma BOOLEAN
-);
+) ENGINE=InnoDB;
 
 INSERT INTO aluno(nome, email, idade, serie) VALUES 
 ("Maria Clara", "maria@maria.com", 17, "M3"),
