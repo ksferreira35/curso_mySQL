@@ -28,6 +28,14 @@ cod_curso INTEGER AUTO_INCREMENT PRIMARY KEY,
     FOREIGN KEY (id_professor) REFERENCES professor(cod_professor)
 ) ENGINE=InnoDB;
 
+CREATE TABLE matricula (
+cod_matricula BIGINT AUTO_INCREMENT PRIMARY KEY,
+	cod_aluno INTEGER,
+    cod_curso INTEGER,
+    FOREIGN KEY (cod_aluno) REFERENCES aluno(RA),
+    FOREIGN KEY (cod_curso) REFERENCES curso(cod_curso)
+) ENGINE=InnoDB;
+
 INSERT INTO aluno(nome, email, idade, serie) VALUES 
 ("Maria Clara", "maria@maria.com", 17, "M3"),
 ("Lucas Barbosa", "lucas@lucas.com", 14, "F9"),
@@ -43,6 +51,13 @@ INSERT INTO aluno(nome, email, idade, serie) VALUES
 ("Gabriel Almeida", "gabriel@escola.com", 14, "F9"),
 ("Rafaela Pinto", "rafaela@escola.com", 15, "M1");
 
+INSERT INTO professor(nome, email, telefone, diploma) VALUES 
+("Lucas Branquinho", "lucas.branquinho@escola.com", 40028922, TRUE),
+("Ludmilla Italia", "ludmilla.italia@escola.com", 11987654321, TRUE),
+("Carlos Reis", "carlos.reis@escola.com", 21912345678, TRUE),
+("Thayna Coelho", "thayna.coelho@escola.com", 31998765432, FALSE),
+("Lais Alves", "lais.alves@escola.com", 41911223344, TRUE);
+
 INSERT INTO curso(disciplina, descr, carga_horaria, id_professor) VALUES 
 ("Matemática", "Geometria e Álgebra", 2, 1),
 ("Português", "Gramática e Interpretação de Texto", 3, 5),
@@ -51,15 +66,11 @@ INSERT INTO curso(disciplina, descr, carga_horaria, id_professor) VALUES
 ("Educação Física", "Atividades físicas e esportes", 1, 2),
 ("Artes", "Expressão artística e cultura", 1, 4);
 
-TRUNCATE curso;
+INSERT INTO matricula(cod_aluno, cod_curso) SELECT a.RA, c.cod_curso FROM aluno a CROSS JOIN curso c;
 
-INSERT INTO professor(nome, email, telefone, diploma) VALUES 
-("Lucas Branquinho", "lucas.branquinho@escola.com", 40028922, TRUE),
-("Ludmilla Italia", "ludmilla.italia@escola.com", 11987654321, TRUE),
-("Carlos Reis", "carlos.reis@escola.com", 21912345678, TRUE),
-("Thayna Coelho", "thayna.coelho@escola.com", 31998765432, FALSE),
-("Lais Alves", "lais.alves@escola.com", 41911223344, TRUE);
+TRUNCATE curso;
 
 SELECT * FROM aluno;
 SELECT * FROM professor;
-SELECT * FROM curso
+SELECT * FROM curso;
+SELECT * FROM matricula;
