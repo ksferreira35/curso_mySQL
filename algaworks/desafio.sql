@@ -11,19 +11,21 @@ RA INTEGER AUTO_INCREMENT PRIMARY KEY,
 	serie VARCHAR(3)
 ) ENGINE=InnoDB;
 
-CREATE TABLE curso (
-cod_curso INTEGER AUTO_INCREMENT PRIMARY KEY,
-	disciplina VARCHAR(100),
-    descr TEXT,
-    carga_horaria INT
-) ENGINE=InnoDB;
-
 CREATE TABLE professor (
 cod_professor INTEGER AUTO_INCREMENT PRIMARY KEY,
 	nome VARCHAR(100),
     email VARCHAR(100),
     telefone VARCHAR(15),
     diploma BOOLEAN
+) ENGINE=InnoDB;
+
+CREATE TABLE curso (
+cod_curso INTEGER AUTO_INCREMENT PRIMARY KEY,
+	disciplina VARCHAR(100),
+    descr TEXT,
+    carga_horaria INT,
+    id_professor INTEGER,
+    FOREIGN KEY (id_professor) REFERENCES professor(cod_professor)
 ) ENGINE=InnoDB;
 
 INSERT INTO aluno(nome, email, idade, serie) VALUES 
@@ -41,13 +43,15 @@ INSERT INTO aluno(nome, email, idade, serie) VALUES
 ("Gabriel Almeida", "gabriel@escola.com", 14, "F9"),
 ("Rafaela Pinto", "rafaela@escola.com", 15, "M1");
 
-INSERT INTO curso(disciplina, descr, carga_horaria) VALUES 
-("Matemática", "Geometria e Álgebra", 2),
-("Português", "Gramática e Interpretação de Texto", 3),
-("História", "História do Brasil e Geral", 2),
-("Ciências", "Biologia, Física e Química básicas", 2),
-("Educação Física", "Atividades físicas e esportes", 1),
-("Artes", "Expressão artística e cultura", 1);
+INSERT INTO curso(disciplina, descr, carga_horaria, id_professor) VALUES 
+("Matemática", "Geometria e Álgebra", 2, 1),
+("Português", "Gramática e Interpretação de Texto", 3, 5),
+("História", "História do Brasil e Geral", 2, 3),
+("Ciências", "Biologia, Física e Química básicas", 2, 1),
+("Educação Física", "Atividades físicas e esportes", 1, 2),
+("Artes", "Expressão artística e cultura", 1, 4);
+
+TRUNCATE curso;
 
 INSERT INTO professor(nome, email, telefone, diploma) VALUES 
 ("Lucas Branquinho", "lucas.branquinho@escola.com", 40028922, TRUE),
