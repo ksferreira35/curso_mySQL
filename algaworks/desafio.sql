@@ -7,7 +7,9 @@ RA INTEGER AUTO_INCREMENT PRIMARY KEY,
 	nome VARCHAR(100),
     email VARCHAR(100),
     idade INT,
-	serie VARCHAR(3)
+	serie VARCHAR(3),
+    status VARCHAR(20) NOT NULL DEFAULT "ATIVO",
+    INDEX ix_nomeAluno(nome)
 ) ENGINE=InnoDB;
 
 CREATE TABLE professor (
@@ -15,7 +17,8 @@ cod_professor INTEGER AUTO_INCREMENT PRIMARY KEY,
 	nome VARCHAR(100),
     email VARCHAR(100),
     telefone VARCHAR(15),
-    diploma BOOLEAN
+    diploma BOOLEAN,
+	INDEX ix_nomeProf(nome)
 ) ENGINE=InnoDB;
 
 CREATE TABLE curso (
@@ -24,6 +27,7 @@ cod_curso INTEGER AUTO_INCREMENT PRIMARY KEY,
     descr TEXT,
     carga_horaria INT,
     id_professor INTEGER,
+    INDEX ix_disciplina(disciplina),
     FOREIGN KEY (id_professor) REFERENCES professor(cod_professor)
 ) ENGINE=InnoDB;
 
@@ -32,7 +36,7 @@ cod_matricula BIGINT AUTO_INCREMENT PRIMARY KEY,
 	cod_aluno INTEGER,
     cod_curso INTEGER,
     data_matricula DATE,
-    FOREIGN KEY (cod_aluno) REFERENCES aluno(RA),
+    FOREIGN KEY (cod_aluno) REFERENCES aluno(RA) ON DELETE CASCADE,
     FOREIGN KEY (cod_curso) REFERENCES curso(cod_curso)
 ) ENGINE=InnoDB;
 
@@ -67,7 +71,6 @@ INSERT INTO curso(disciplina, descr, carga_horaria, id_professor) VALUES
 ("Artes", "Expressão artística e cultura", 1, 4),
 ("Programação", "Estrutura de Dados", 1, 2);
 
--- Massa de dados para a tabela matricula (distribuída ao longo de 2014)
 INSERT INTO matricula (cod_aluno, cod_curso, data_matricula) VALUES
 (1, 1, '2014-01-15'),
 (2, 2, '2014-01-20'),
@@ -135,4 +138,16 @@ SELECT DISTINCT p.nome
 WHERE p.cod_professor = c.id_professor
 AND m.cod_curso = c.cod_curso;
 
+EXPLAIN SELECT * 
+ FROM aluno
+ WHERE nome = "Maria Clara";
+
+UPDATE aluno
+ SET status = "TRANCADO"
+ WHERE nome = "Lucas Barbosa";
+
+SET SQL_SAFE_UPDATES = 0;
+
+DELETE FROM aluno 
+WHERE nome = "Rafaela Pinto";
 
