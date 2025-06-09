@@ -7,6 +7,7 @@ CREATE TABLE clientes (
     nome               VARCHAR(100),
     email              VARCHAR(50),
     data_nasc          DATE,
+    CONSTRAINT nome_cliente UNIQUE (nome),
     INDEX ix_nome(nome)
 ) ENGINE=InnoDB;
 
@@ -20,7 +21,7 @@ CREATE TABLE pedidos (
     cliente_id         BIGINT,
     forma_pagamento    VARCHAR(20) NOT NULL,
     status VARCHAR(20) NOT NULL DEFAULT "ORCAMENTO",
-    CONSTRAINT fk_cliente_id FOREIGN KEY (cliente_id) REFERENCES clientes(cod_cliente)
+    FOREIGN KEY (cliente_id) REFERENCES clientes(cod_cliente)
 ) ENGINE=InnoDB;
 
 CREATE TABLE produtos (
@@ -39,13 +40,16 @@ CREATE TABLE pedidos_produtos (
     FOREIGN KEY (cod_prod) REFERENCES produtos(cod_prod)
 ) ENGINE=InnoDB;
 
-INSERT INTO clientes (nome, email, data_nasc) 
+INSERT IGNORE INTO clientes (nome, email, data_nasc) 
 VALUES 
     ("João Silva", "joao@email.com", "1990-01-01"),
-    ("Maria Santos", "maria@email.com", "1991-02-20");
+    ("Maria Santos", "maria@email.com", "1991-02-20"),
+    ("Rafael Costa","rafael@email.com","1989-04-10"),
+    ("Pedro Macedo","pedro@email.com","1992-05-22"),
+    ("José Pereira", "jose@email.com", "1990-10-10");
 
 INSERT INTO pedidos (data_creation, data_entrega, valor_frete, valor_total, cliente_id, forma_pagamento, status)
-VALUES (now(), '2025-06-12', 2.00, 200.00, 1, "Dinheiro", "CANCELADO");
+VALUES (now(), '2025-06-12', 2.00, 200.00, 1, "Dinheiro", "EM ANDAMENTO");
 
 INSERT INTO pedidos (data_creation, data_entrega, valor_frete, valor_total, cliente_id, obs, forma_pagamento)
 VALUES 
@@ -62,7 +66,9 @@ INSERT IGNORE INTO produtos (nome, valor_unitario, quantidade_estoque)
 VALUES  
     ("Cola Super", 24.40, 300),
     ("Cimento X", 45.50, 140),
-    ('Papel A4', 12.00, 100);
+    ('Papel A4', 12.00, 100),
+    ("Caneta", 7.00, 200),
+    ("Borracha", 2.00, 300);
 
 INSERT INTO pedidos_produtos (cod_pedido, cod_prod, quantidade) VALUES 
     (4, 1, 4),
@@ -120,3 +126,58 @@ DELETE FROM pedidos WHERE cliente_id is null;
 UPDATE pedidos
  SET status = "EMITIDO"
  WHERE forma_pagamento != "Cartão";
+ 
+SELECT * FROM pedidos;
+
+SELECT status
+	 , SUM(valor_total) total_vendas
+ FROM pedidos
+ GROUP BY status;
+ 
+SELECT date(data_creation)
+	 , sum(valor_total)
+     , status
+ FROM pedidos
+ WHERE status = "ORCAMENTO"
+ GROUP BY date(data_creation);
+ 
+SELECT status
+	 , AVG(valor_total) total_vendas
+ FROM pedidos
+ GROUP BY status;
+ 
+SELECT * FROM clientes
+ORDER BY data_nasc;
+
+SELECT * FROM clientes
+ WHERE nome LIKE "J%";
+ 
+SELECT DISTINCT data_entrega 
+ FROM pedidos 
+ ORDER BY data_entrega;
+
+SELECT * FROM produtos
+	WHERE cod_prod IN (3, 4);
+    
+-- SUB-SELECT
+SELECT DISTINCT c.nome
+	 , c.email
+     , p.status
+ FROM clientes c
+	, pedidos p
+ WHERE cod_cliente IN (SELECT cliente_id FROM pedidos WHERE p.status = "CANCELADO") 
+  AND c.cod_cliente = p.cliente_id;
+  
+SELECT DISTINCT c.nome, c.email
+FROM clientes c
+WHERE c.cod_cliente IN (
+    SELECT cliente_id
+    FROM pedidos
+    WHERE status = "CANCELADO"
+);
+
+SELECT DISTINCT c.nome, c.email, p.status
+FROM clientes c
+JOIN pedidos p ON c.cod_cliente = p.cliente_id
+WHERE p.status = "CANCELADO";
+

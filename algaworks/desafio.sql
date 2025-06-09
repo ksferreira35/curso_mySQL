@@ -35,6 +35,7 @@ CREATE TABLE matricula (
 cod_matricula BIGINT AUTO_INCREMENT PRIMARY KEY,
 	cod_aluno INTEGER,
     cod_curso INTEGER,
+    valor_pdia DECIMAL(6, 2),
     data_matricula DATE,
     FOREIGN KEY (cod_aluno) REFERENCES aluno(RA) ON DELETE CASCADE,
     FOREIGN KEY (cod_curso) REFERENCES curso(cod_curso)
@@ -53,7 +54,8 @@ INSERT INTO aluno(nome, email, idade, serie) VALUES
 ("Lucas Martins", "lucasm@escola.com", 16, "M2"),
 ("Mariana Costa", "mariana@escola.com", 12, "F7"),
 ("Gabriel Almeida", "gabriel@escola.com", 14, "F9"),
-("Rafaela Pinto", "rafaela@escola.com", 15, "M1");
+("Rafaela Pinto", "rafaela@escola.com", 15, "M1"),
+("Mateus Alarcao", "mateus@escola.com", 15, "M2");
 
 INSERT INTO professor(nome, email, telefone, diploma) VALUES 
 ("Lucas Branquinho", "lucas.branquinho@escola.com", 40028922, TRUE),
@@ -71,31 +73,31 @@ INSERT INTO curso(disciplina, descr, carga_horaria, id_professor) VALUES
 ("Artes", "Expressão artística e cultura", 1, 4),
 ("Programação", "Estrutura de Dados", 1, 2);
 
-INSERT INTO matricula (cod_aluno, cod_curso, data_matricula) VALUES
-(1, 1, '2014-01-15'),
-(2, 2, '2014-01-20'),
-(3, 3, '2014-02-05'),
-(4, 4, '2014-02-18'),
-(5, 5, '2014-03-02'),
-(6, 6, '2014-03-15'),
-(7, 1, '2014-04-01'),
-(8, 2, '2014-04-16'),
-(9, 3, '2014-05-03'),
-(10, 4, '2014-05-19'),
-(11, 5, '2014-06-07'),
-(12, 6, '2014-06-22'),
-(13, 1, '2014-07-01'),
-(1, 2, '2014-07-18'),
-(2, 3, '2014-08-04'),
-(3, 4, '2014-08-20'),
-(4, 5, '2014-09-05'),
-(5, 6, '2014-09-21'),
-(6, 1, '2014-10-09'),
-(7, 2, '2014-10-25'),
-(8, 3, '2014-11-10'),
-(9, 4, '2014-11-24'),
-(10, 5, '2014-12-08'),
-(11, 6, '2014-12-20');
+INSERT INTO matricula (cod_aluno, cod_curso, data_matricula, valor_pdia) VALUES
+(1, 1, '2014-01-15', 100.00),
+(2, 2, '2014-01-20', 150.50),
+(3, 3, '2014-02-05', 200.00),
+(4, 4, '2014-02-18', 120.75),
+(5, 5, '2014-03-02', 180.00),
+(6, 6, '2014-03-15', 175.25),
+(7, 1, '2014-04-01', 100.00),
+(8, 2, '2014-04-16', 150.50),
+(9, 3, '2014-05-03', 200.00),
+(10, 4, '2014-05-19', 120.75),
+(11, 5, '2014-06-07', 180.00),
+(12, 6, '2014-06-22', 175.25),
+(13, 1, '2014-07-01', 100.00),
+(1, 2, '2014-07-18', 150.50),
+(2, 3, '2014-08-04', 200.00),
+(3, 4, '2014-08-20', 120.75),
+(4, 5, '2014-09-05', 180.00),
+(5, 6, '2014-09-21', 175.25),
+(6, 1, '2014-10-09', 100.00),
+(7, 2, '2014-10-25', 150.50),
+(8, 3, '2014-11-10', 200.00),
+(9, 4, '2014-11-24', 120.75),
+(10, 5, '2014-12-08', 180.00),
+(11, 6, '2014-12-20', 175.25);
 
 SELECT * FROM aluno;
 SELECT * FROM professor;
@@ -151,3 +153,23 @@ SET SQL_SAFE_UPDATES = 0;
 DELETE FROM aluno 
 WHERE nome = "Rafaela Pinto";
 
+SELECT SUM(valor_pdia) preco_por_dia
+ FROM matricula;
+
+SELECT AVG(valor_pdia) preco_por_dia
+ FROM matricula;
+ 
+SELECT data_matricula
+	 , SUM(valor_pdia) total_dia
+FROM matricula
+ GROUP BY data_matricula
+ ORDER BY data_matricula;
+
+SELECT DISTINCT RA
+	 , nome
+ FROM aluno
+ WHERE RA IN (
+ SELECT cod_aluno 
+ FROM matricula
+)
+ORDER BY RA;
